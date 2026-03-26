@@ -1,0 +1,31 @@
+{
+  "version": "1.0",
+  "egress_policy": "whitelist",
+  "description": "ASF Framework tiered egress control — L0 (fully blocked) through L4 (unrestricted)",
+  "default_action": "deny",
+  "audit_mode": true,
+  "tiers": {
+    "L0": {"description": "Fully blocked — no outbound traffic permitted", "rules": []},
+    "L1": {"description": "DNS and system resolver only", "rules": [{"dest": "dns", "ports": [53], "protocol": "udp"}]},
+    "L2": {"description": "Package registries and system updates", "rules": [
+      {"dest": "docker.io", "ports": [443], "tier": "L2"},
+      {"dest": "github.com", "ports": [443], "tier": "L2"},
+      {"dest": "api.github.com", "ports": [443], "tier": "L2"},
+      {"dest": "packages.apple.com", "ports": [443], "tier": "L2"}
+    ]},
+    "L3": {"description": "AI/ML APIs and enterprise services", "rules": [
+      {"dest": "api.openai.com", "ports": [443], "tier": "L3"},
+      {"dest": "api.anthropic.com", "ports": [443], "tier": "L3"},
+      {"dest": "api.x.ai", "ports": [443], "tier": "L3"},
+      {"dest": "api.clawhub.ai", "ports": [443], "tier": "L3"},
+      {"dest": "sandbox.jvsmanagement.com", "ports": [443], "tier": "L3"}
+    ]},
+    "L4": {"description": "Unrestricted — requires explicit approval", "rules": []}
+  },
+  "excluded": {
+    "description": "Always-allowed destinations regardless of tier",
+    "destinations": ["localhost", "127.0.0.1", "0.0.0.0", "::1"]
+  },
+  "alert_on_block": true,
+  "log_egress_violations": true
+}
