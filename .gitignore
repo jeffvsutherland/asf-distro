@@ -1,0 +1,8 @@
+# Exclude ASF offensive tools, agents, and scripts directories
+security-tools/
+agents/
+scripts/
+
+# OS files
+.DS_Store
+*.swp
